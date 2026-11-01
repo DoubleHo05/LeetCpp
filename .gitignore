@@ -1,0 +1,17 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local dependencies
+node_modules/
+vendor/
+
+# Build outputs
+.next/
+dist/
+build/
+
+# Go
+*.exe
+*.test
