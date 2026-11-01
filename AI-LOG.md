@@ -110,3 +110,25 @@ README only) — no secret has ever been committed. `.gitignore` covers
 `.env`/`.env.*` with an exception for `.env.example`, which lists variable
 names without values. The submission sandbox must never receive the model key
 or any application secret (`AGENTS.md` → Never).
+
+## 2026-11-01 #9 — Incident: CI caught a "works on my machine" typecheck
+
+**What went wrong:** The first real CI run of `make check` went **red**:
+`app/layout.tsx(20,50): error TS2304: Cannot find name 'LayoutProps'` — while
+`pnpm typecheck` had been green locally the whole time.
+
+**Root cause:** `LayoutProps` is a *generated* global type (Next 16 writes it
+into `.next/types/routes.d.ts` during `next dev` / `next build` /
+`next typegen`). A local `.next/` cache from earlier runs made `tsc` pass; CI
+starts from a fresh checkout with no `.next/`, so the type did not exist. Same
+command, different machine state — exactly the failure the "same commands
+locally and in CI" rule exists to expose.
+
+**Fix:** the frontend `typecheck` script is now `next typegen && tsc --noEmit`
+(per Next 16's docs: these helpers are "generated when running either
+`next dev`, `next build` or `next typegen`"). Verified by deleting `.next/`
+and running the check clean — green. `make check` green end to end.
+
+**Rule reinforced:** a local green that depends on build artifacts is not
+evidence; only a fresh-clone run is. The red CI run on the PA#2 PR was the
+gate doing exactly its job.
