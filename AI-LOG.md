@@ -5,6 +5,28 @@ LeetCpp). Entries record what was decided, what actually went wrong, and how
 it was fixed. Rules in `AGENTS.md` that grew out of an entry cite the entry
 number so the rule can be traced back to the incident.
 
+## Tools used, and for what
+
+| Tool | Part of the work |
+|---|---|
+| **MiMoCode** (CLI coding assistant) | All PA#2 work: the contract draft, the Go handler and contract tests, `ci.yml`, `AGENTS.md`, the PA#2 evidence audit, the deliberate contract break, the branch-protection fix, `PA2.md`, `SELF_ASSESSMENT_REPORT.md` |
+| Go toolchain (`go test`, `go vet`, `gofmt`) | Backend checks and the contract suite |
+| pnpm + eslint + prettier + tsc + vitest | Frontend checks |
+| GitHub Actions, `checks` job | Runs `make check` on every PR and on the `pa2` tag |
+| GitHub REST API | Reading and correcting the `main` branch-protection rule |
+
+Entries #1–#9 come from the initial PA#2 harness build; entries #10 onward
+also record the tool where it matters to the incident.
+
+## Changed / Rejected
+
+| | Entry | What |
+|---|---|---|
+| **Changed** | #11 | The CI workflow the assistant wrote could never run for the `pa2` tag the rubric asks for — found while filling in `PA2.md` links. |
+| **Changed** | #12 | The branch-protection rule required *no* status check, so a red PR was still mergeable — found by reading the rule over the API instead of trusting the README. |
+| **Changed** | #2, #9 | Test helpers that hard-coded expectations; a `typecheck` script that depended on a local `.next/` cache. |
+| **Rejected** | #13 | Force-moving the `pa2` tag so the tag's own CI-run link would land inside the tagged tree. |
+
 ---
 
 ## 2026-10-31 #1 — PA#2 harness: contract first, then code
@@ -132,3 +154,87 @@ and running the check clean — green. `make check` green end to end.
 **Rule reinforced:** a local green that depends on build artifacts is not
 evidence; only a fresh-clone run is. The red CI run on the PA#2 PR was the
 gate doing exactly its job.
+
+## 2026-11-11 #10 — The deliberate contract break, executed for real
+
+**What:** Entry #4 above rehearsed the contract break locally and left an
+"evidence plan" for later. That plan is now done. Tool: MiMoCode.
+
+**What happened, in order:**
+
+1. `backend/internal/api/submit.go` was changed so `idempotency-key-reused`
+   returned `400` where
+   [`docs/contract/post-labs-labid-submissions.md`](docs/contract/post-labs-labid-submissions.md)
+   §5 contracts `409`. `submit_test.go` was not opened or edited.
+2. Commit `6805acb` pushed to `pa2/contract-break`, PR #2 opened. `checks`
+   went **red** — run
+   [`42879941393`](https://github.com/DoubleHo05/LeetCpp/actions/runs/42879941393):
+   `submit_test.go:274: status = 400, want 409`.
+3. Merging was attempted while red and GitHub refused it outright:
+   `Required status check "checks" is failing.` The PR reported
+   `mergeable_state: blocked`.
+4. Commit `9047e6e` restored `http.StatusConflict`. `checks` went **green** —
+   run [`42880430692`](https://github.com/DoubleHo05/LeetCpp/actions/runs/42880430692).
+5. PR #2 merged with a merge commit, so both commits stay in `main`'s history
+   as the evidence.
+
+**Changed:** nothing in the test suite. The only file touched in either commit
+is `submit.go`. That is the point of the exercise: the code violated the
+contract, the assertion was right.
+
+## 2026-11-11 #11 — Changed: the CI workflow could never run for the tag
+
+**What went wrong:** The assistant wrote `.github/workflows/ci.yml` (entry #7)
+triggering on `pull_request` and on `push` to `main` only. PA#2 asks for "the
+CI run for the tag", and pushing the `pa2` tag starts **no** workflow. The
+evidence link in `PA2.md` could never be filled in — a check that cannot run
+is the same defect as a check that cannot fail.
+
+**How it was found:** not by reading the workflow, but by trying to fill in
+`PA2.md` and realising the slot had no possible value. Writing the evidence
+first exposes the gaps that reading the code does not.
+
+**Fix:** `on: push: tags: [pa2]` added to the same workflow. Same job, same
+command, still `make check`.
+
+**Rule reinforced:** every artifact the rubric asks for must have a real way
+to come into existence. If it cannot, the harness is wrong.
+
+## 2026-11-11 #12 — Changed: branch protection required no status check
+
+**What went wrong:** `main` *had* a protection rule (PR required, admins
+enforced, force pushes off), and `README.md` §8 said the `checks` status must
+be required. The rule's `required_status_checks` was in fact **empty**. A red
+PR could have been merged. The documentation and the setting disagreed.
+
+**How it was found:** the assistant read the rule over the GitHub API rather
+than trusting the README's description of it — `GET /branches/main/protection`
+returned `contexts: []`. Documentation of a safety setting is not evidence
+that the setting exists.
+
+**Fix:** `checks` is now a required status on `main`, with `strict: true`
+(the branch must be up to date and the check green before merging). The API
+response after the change is kept as
+[`docs/evidence/branch-protection.json`](docs/evidence/branch-protection.json).
+The refusal quoted in entry #10 step 3 is the same setting biting.
+
+**Rule reinforced:** never document a safety control without reading the
+control back. `AGENTS.md` → Never → "never weaken sandbox restrictions or CI
+checks" covers the failure mode; this entry is the read-back habit that
+catches the silent version of it.
+
+## 2026-11-11 #13 — Rejected: force-moving the `pa2` tag
+
+**What was proposed:** PA#2 wants "the CI run for the tag" linked from
+`PA2.md`, but the run URL only exists after the tag is pushed — so the tagged
+tree cannot contain the link to its own run. The assistant considered
+finishing `PA2.md`, tagging, then `git tag -f pa2` to re-point the tag at a
+follow-up commit that records the URL.
+
+**Rejected.** Force-moving a published tag is exactly the kind of destructive,
+hard-to-reverse git action `AGENTS.md` forbids, and it would make the tag's
+tree lie about its own history. Instead: the tag points at the deliverables
+commit, `PA2.md` links the `checks` run of that exact commit (the run every
+reviewer sees next to it), and the tag's own run URL is recorded in the
+submission zip, which is taken from `main` after that commit. The evidence is
+complete without rewriting anything.

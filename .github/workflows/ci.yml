@@ -4,6 +4,9 @@ on:
   pull_request:
   push:
     branches: [main]
+    # The `pa2` submission tag must also produce a run, so PA2.md can link
+    # "the CI run for the tag". Without this line a tag push starts nothing.
+    tags: [pa2]
 
 # One job, one command: the workflow runs the same `make check` a developer
 # runs locally. Nothing here is CI-only. A red `checks` status must be set as
