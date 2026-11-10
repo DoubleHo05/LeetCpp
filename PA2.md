@@ -91,22 +91,30 @@ For PR #1 the green commit is
 
 ## 5. CI run for the tag `pa2`
 
-The `pa2` tag marks the deliverables commit on `main` — the commit that
-carries this file, `SELF_ASSESSMENT_REPORT.md`, `AI-LOG.md` entries #10–#13,
-and `docs/evidence/`.
+The `pa2` tag points at commit
+[`8118a78df58c59041c1058228b51dd6ed2d9982d`](https://github.com/DoubleHo05/LeetCpp/commit/8118a78df58c59041c1058228b51dd6ed2d9982d)
+— the deliverables commit on `main` that carries this file,
+`SELF_ASSESSMENT_REPORT.md`, `AI-LOG.md` entries #10–#13, and
+`docs/evidence/`. It is the merge of PR #4.
 
-**CI run for the tag** (this link always resolves to the run started by the
-tag, whatever commit it marks):
+**CI run for the tag** (the run the tag push started, `checks` → `success`):
 
+<https://github.com/DoubleHo05/LeetCpp/actions/runs/42882784553>
+
+The same commit also ran on push to `main`:
+<https://github.com/DoubleHo05/LeetCpp/actions/runs/42882752666> (`success`).
+
+All runs for the tag, whatever it is later moved to:
 <https://github.com/DoubleHo05/LeetCpp/actions?query=ref%3Atags%2Fpa2>
 
 The job is the same `checks` job that guards every pull request, running the
-same single command `make check`. The tag was pushed only after PR #3 merged
+same single command `make check`. The tag was pushed only after PR #4 merged
 green, and only `main` commits that arrived through a PR are tagged.
 
-A run URL cannot be written into the tree that creates it, so the direct run
-link and the tagged commit's SHA are recorded in the submission zip's copy of
-this file, taken from `main` after the tag. The tag itself is never rewritten
+A run URL cannot be written into the tree that creates it, so this file at the
+tag states the approach and the tagged commit; the two run URLs above were
+added in the next commit on `main`, which is the revision the submission zip
+is taken from. The tag itself is never rewritten
 (`AI-LOG.md` 2026-11-11 #13).
 
 ## 6. Deliberate contract break
