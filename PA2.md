@@ -6,7 +6,7 @@ This file is the evidence index the brief asks for.
 | # | What | Link | Status |
 |---|---|---|---|
 | 1 | Repository | <https://github.com/DoubleHo05/LeetCpp> | public |
-| 2 | Protected-branch settings | [`docs/evidence/branch-protection.json`](docs/evidence/branch-protection.json) | done |
+| 2 | Protected-branch settings | [`docs/evidence/Screenshot 2026-11-11 at 01.42.33.png`](docs/evidence/Screenshot%202026-11-11%20at%2001.42.33.png) + [`docs/evidence/branch-protection.json`](docs/evidence/branch-protection.json) | done |
 | 3 | Blocked PR (red check refused) | <https://github.com/DoubleHo05/LeetCpp/pull/2> | done |
 | 4 | PR that turned green | <https://github.com/DoubleHo05/LeetCpp/pull/2> (same PR) | done |
 | 5 | CI run for the tag `pa2` | see [§5](#5-ci-run-for-the-tag-pa2) | recorded at tag time |
@@ -20,10 +20,18 @@ This file is the evidence index the brief asks for.
 
 ## 2. Protected-branch settings
 
-Evidence: [`docs/evidence/branch-protection.json`](docs/evidence/branch-protection.json)
-— the GitHub REST response for
-`GET /repos/DoubleHo05/LeetCpp/branches/main/protection`, saved verbatim after
-the rule was corrected. It shows:
+Two artifacts, one rule:
+
+- **Screenshot** —
+  [`docs/evidence/Screenshot 2026-11-11 at 01.42.33.png`](docs/evidence/Screenshot%202026-11-11%20at%2001.42.33.png),
+  taken from GitHub → Settings → Branches on
+  `github.com/DoubleHo05/LeetCpp`. It shows the protection rule on `main`
+  ("Currently applies to 1 branch").
+- **The rule's settings** —
+  [`docs/evidence/branch-protection.json`](docs/evidence/branch-protection.json),
+  the GitHub REST response for
+  `GET /repos/DoubleHo05/LeetCpp/branches/main/protection`, saved verbatim
+  after the rule was corrected:
 
 | Setting | Value |
 |---|---|
@@ -36,9 +44,7 @@ the rule was corrected. It shows:
 
 The rule was **corrected** as part of this submission: before the fix,
 `required_status_checks` was empty, so a red PR was still mergeable. The
-incident is recorded in [`AI-LOG.md`](AI-LOG.md) 2026-11-11 #12. A browser
-screenshot of the same Settings page is optional extra evidence; the API
-response is the machine-readable truth of the rule.
+incident is recorded in [`AI-LOG.md`](AI-LOG.md) 2026-11-11 #12.
 
 ## 3. Blocked PR (red check refused the merge)
 
