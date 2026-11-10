@@ -9,7 +9,7 @@ This file is the evidence index the brief asks for.
 | 2 | Protected-branch settings | [`docs/evidence/Screenshot 2026-11-11 at 01.42.33.png`](docs/evidence/Screenshot%202026-11-11%20at%2001.42.33.png) + [`docs/evidence/branch-protection.json`](docs/evidence/branch-protection.json) | done |
 | 3 | Blocked PR (red check refused) | <https://github.com/DoubleHo05/LeetCpp/pull/2> | done |
 | 4 | PR that turned green | <https://github.com/DoubleHo05/LeetCpp/pull/2> (same PR) | done |
-| 5 | CI run for the tag `pa2` | see [§5](#5-ci-run-for-the-tag-pa2) | recorded at tag time |
+| 5 | CI run for the tag `pa2` | <https://github.com/DoubleHo05/LeetCpp/actions?query=ref%3Atags%2Fpa2> | done |
 | 6 | Deliberate contract break | <https://github.com/DoubleHo05/LeetCpp/pull/2> | done |
 
 ---
@@ -91,20 +91,23 @@ For PR #1 the green commit is
 
 ## 5. CI run for the tag `pa2`
 
-The tag `pa2` points at commit **`{{TAG_SHA}}`** (the deliverables commit on
-`main` — this file and the rest of the PA#2 evidence).
+The `pa2` tag marks the deliverables commit on `main` — the commit that
+carries this file, `SELF_ASSESSMENT_REPORT.md`, `AI-LOG.md` entries #10–#13,
+and `docs/evidence/`.
 
-- The `checks` run of that exact commit:
-  **`{{TAG_COMMIT_RUN}}`** (push to `main`, green).
-- Pushing the tag also starts a run of the same workflow and the same
-  `make check` command: **`{{TAG_PUSH_RUN}}`**.
+**CI run for the tag** (this link always resolves to the run started by the
+tag, whatever commit it marks):
 
-Both URLs are printed in the submission zip at `PA2.md`. The zip is taken from
-`main` at the commit that records them; the tag itself stays on the
-deliverables commit so its tree is never rewritten (see
-[`AI-LOG.md`](AI-LOG.md) 2026-11-11 #13). Re-running the checks on the tag is
-what the brief asks graders to do, and both commits run the identical
-command.
+<https://github.com/DoubleHo05/LeetCpp/actions?query=ref%3Atags%2Fpa2>
+
+The job is the same `checks` job that guards every pull request, running the
+same single command `make check`. The tag was pushed only after PR #3 merged
+green, and only `main` commits that arrived through a PR are tagged.
+
+A run URL cannot be written into the tree that creates it, so the direct run
+link and the tagged commit's SHA are recorded in the submission zip's copy of
+this file, taken from `main` after the tag. The tag itself is never rewritten
+(`AI-LOG.md` 2026-11-11 #13).
 
 ## 6. Deliberate contract break
 
