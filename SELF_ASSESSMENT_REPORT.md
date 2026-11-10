@@ -23,8 +23,12 @@ do not make.
 - **The `pa2` tag cannot contain the link to its own tag-push CI run.** The
   run URL only exists after the tag is pushed. Rather than rewrite the tag
   (`AI-LOG.md` 2026-11-11 #13, rejected), the tag points at the deliverables
-  commit, `PA2.md` links the `checks` run of that exact commit, and the
-  tag-push run URL is recorded in the zip's copy of `PA2.md`.
+  commit `8118a78`, `PA2.md` links the Actions view filtered to the tag
+  (which always resolves), and the two direct run URLs
+  ([tag run 42882784553](https://github.com/DoubleHo05/LeetCpp/actions/runs/42882784553),
+  [main run 42882752666](https://github.com/DoubleHo05/LeetCpp/actions/runs/42882752666))
+  are recorded in the next commit on `main`, which is what the submission zip
+  is taken from.
 - **No model API key exists yet.** The spending cap (USD 15/month) is
   documented and will be set in the provider's billing console before the key
   is issued, but there is no live key to point at. This is deliberate: PA#3 is
