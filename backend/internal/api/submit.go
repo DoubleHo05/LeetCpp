@@ -124,7 +124,7 @@ func (h *SubmitHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			writeSubmission(w, http.StatusOK, prevSub)
 			return
 		}
-		writeProblem(w, r, http.StatusBadRequest, "idempotency-key-reused", "Idempotency-Key Reused",
+		writeProblem(w, r, http.StatusConflict, "idempotency-key-reused", "Idempotency-Key Reused",
 			"this Idempotency-Key was already used with a different payload")
 		return
 	}
