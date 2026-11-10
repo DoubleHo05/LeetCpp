@@ -189,10 +189,21 @@ To make CI actually refuse a bad merge, enable branch protection on `main`
 
 Nothing is pushed straight to `main` once protection is on.
 
-Evidence of the gate biting (fill in after the first red/green pair):
+Evidence of the gate biting:
 
-- Red check that stopped a merge: `<PR link>`
-- Commit that turned it green: `<commit link>`
+- **Red check that stopped a merge:** [PR #1](https://github.com/DoubleHo05/LeetCpp/pull/1)
+  — commit `b0bb518` went red on the `checks` status
+  ([run 41311559092](https://github.com/DoubleHo05/LeetCpp/actions/runs/41311559092),
+  `failure`, 2026-11-01 13:31 UTC). The PR stayed unmerged while it was red.
+- **Commit that turned it green:**
+  [`bb94186`](https://github.com/DoubleHo05/LeetCpp/pull/1/changes/bb94186a7064fd8306a55b804136801018de5fc5)
+  — [run 41312466512](https://github.com/DoubleHo05/LeetCpp/actions/runs/41312466512)
+  passed `make check` (`success`, 2026-11-01 13:42 UTC). PR #1 merged at
+  14:00 UTC, after the green run.
+
+Both PR #1 commits ran the same `checks` job. Nothing has been pushed straight
+to `main` since branch protection was enabled; the only commits on `main`
+after the initial commit arrived through PR #1.
 
 ## 9. Project Documentation
 
